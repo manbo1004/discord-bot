@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 from flask import Flask
@@ -13,8 +12,9 @@ intents.message_content = True
 intents.guilds = True
 intents.members = True
 
-bot = commands.Bot(command_prefix="/", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 user_data = {}
+
 shop_items = {
     "치킨": 30000,
     "500만 메소": 30000,
@@ -49,11 +49,9 @@ async def 슬롯(ctx):
     result = [random.choice(emojis) for _ in range(3)]
     if result.count(result[0]) == 3:
         user_data[uid] += 3000
-await ctx.send(f"{' | '.join(result)}")
-3개 일치! +3000P")
+        await ctx.send(f"{' | '.join(result)}\n3개 일치! +3000P")
     else:
-        await ctx.send(f"{' | '.join(result)}
-꽝! 다음 기회에!")
+        await ctx.send(f"{' | '.join(result)}\n꽝! 다음 기회에!")
 
 @bot.command()
 async def 송금(ctx, 대상: discord.User, 금액: int):
