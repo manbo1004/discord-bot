@@ -39,17 +39,17 @@ async def 포인트(ctx):
     await ctx.send(f"{ctx.author.mention}님의 포인트: {user_data.get(uid, 0)}P")
 
 @bot.command()
-async def 슬롯(ctx):
+async def 슬롯(ctx, 금액: int):
     uid = str(ctx.author.id)
-    if user_data.get(uid, 0) < 500:
-        await ctx.send("포인트가 부족합니다. (500P 필요)")
+    if user_data.get(uid, 0) < 금액:
+        await ctx.send("포인트가 부족합니다.")
         return
-    user_data[uid] -= 500
+    user_data[uid] -= 금액
     emojis = ["🍒", "🍋", "🍇"]
     result = [random.choice(emojis) for _ in range(3)]
     if result.count(result[0]) == 3:
-        user_data[uid] += 3000
-        await ctx.send(f"{' | '.join(result)}\n3개 일치! +3000P")
+        user_data[uid] += 금액 * 3
+        await ctx.send(f"{' | '.join(result)}\n3개 일치! +{금액 * 3}P")
     else:
         await ctx.send(f"{' | '.join(result)}\n꽝! 다음 기회에!")
 
@@ -87,51 +87,54 @@ async def 상점(ctx, 아이템: str):
     await ctx.send(f"{아이템} 구매 완료! (-{price}P)")
 
 @bot.command()
-async def 홀짝(ctx, 선택: str):
+async def 홀짝(ctx, 선택: str, 금액: int):
     uid = str(ctx.author.id)
-    if user_data.get(uid, 0) < 1000:
-        await ctx.send("포인트가 부족합니다. (1000P 필요)")
+    if 선택 not in ["홀", "짝"]:
+        await ctx.send("홀 또는 짝 중에서 선택해주세요.")
         return
-    user_data[uid] -= 1000
+    if user_data.get(uid, 0) < 금액:
+        await ctx.send("포인트가 부족합니다.")
+        return
+    user_data[uid] -= 금액
     num = random.randint(1, 100)
     결과 = "홀" if num % 2 else "짝"
     if 선택 == 결과:
-        user_data[uid] += 2000
-        await ctx.send(f"{num} → {결과}! 정답! +2000P")
+        user_data[uid] += 금액 * 2
+        await ctx.send(f"{num} → {결과}! 정답! +{금액 * 2}P")
     else:
         await ctx.send(f"{num} → {결과}! 틀렸습니다!")
 
 @bot.command()
-async def 주사위(ctx, 숫자: int):
+async def 주사위(ctx, 숫자: int, 금액: int):
     uid = str(ctx.author.id)
-    if user_data.get(uid, 0) < 1000:
-        await ctx.send("포인트가 부족합니다. (1000P 필요)")
-        return
     if 숫자 < 1 or 숫자 > 6:
-        await ctx.send("숫자는 1~6 사이로 입력하세요.")
+        await ctx.send("숫자는 1~6 사이로 입력해주세요.")
         return
-    user_data[uid] -= 1000
-    주사위 = random.randint(1, 6)
-    if 숫자 == 주사위:
-        user_data[uid] += 6000
-        await ctx.send(f"🎲 {주사위}! 정답입니다! +6000P")
+    if user_data.get(uid, 0) < 금액:
+        await ctx.send("포인트가 부족합니다.")
+        return
+    user_data[uid] -= 금액
+    결과 = random.randint(1, 6)
+    if 숫자 == 결과:
+        user_data[uid] += 금액 * 6
+        await ctx.send(f"🎲 {결과}! 정답입니다! +{금액 * 6}P")
     else:
-        await ctx.send(f"🎲 {주사위}! 틀렸습니다!")
+        await ctx.send(f"🎲 {결과}! 틀렸습니다!")
 
 @bot.command()
-async def 경마(ctx, 번호: int):
+async def 경마(ctx, 번호: int, 금액: int):
     uid = str(ctx.author.id)
-    if user_data.get(uid, 0) < 2000:
-        await ctx.send("포인트가 부족합니다. (2000P 필요)")
-        return
     if 번호 not in [1, 2, 3, 4]:
-        await ctx.send("1~4 중에서 선택해주세요.")
+        await ctx.send("1~4 중 번호를 선택해주세요.")
         return
-    user_data[uid] -= 2000
+    if user_data.get(uid, 0) < 금액:
+        await ctx.send("포인트가 부족합니다.")
+        return
+    user_data[uid] -= 금액
     승자 = random.randint(1, 4)
     if 번호 == 승자:
-        user_data[uid] += 8000
-        await ctx.send(f"🏇 승자: {승자}번 말! 정답입니다! +8000P")
+        user_data[uid] += 금액 * 4
+        await ctx.send(f"🏇 승자: {승자}번 말! 정답입니다! +{금액 * 4}P")
     else:
         await ctx.send(f"🏇 승자: {승자}번 말! 틀렸습니다!")
 
