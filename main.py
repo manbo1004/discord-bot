@@ -4,6 +4,7 @@ from flask import Flask
 from keep_alive import keep_alive
 import random
 import os
+import datetime
 
 TOKEN = os.environ["TOKEN"]
 
@@ -14,6 +15,7 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 user_data = {}
+출석_기록 = {}
 
 shop_items = {
     "치킨": 30000,
@@ -30,6 +32,11 @@ async def on_ready():
 @bot.command()
 async def 출석(ctx):
     uid = str(ctx.author.id)
+    today = datetime.date.today()
+    if 출석_기록.get(uid) == today:
+        await ctx.send(f"{ctx.author.mention} 이미 출석하셨습니다. (다음 출석은 자정 이후 가능합니다)")
+        return
+    출석_기록[uid] = today
     user_data[uid] = user_data.get(uid, 0) + 100
     await ctx.send(f"{ctx.author.mention} 출석 완료! (+100P)")
 
