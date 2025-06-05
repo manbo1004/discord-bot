@@ -49,7 +49,7 @@ async def 슬롯(ctx):
     result = [random.choice(emojis) for _ in range(3)]
     if result.count(result[0]) == 3:
         user_data[uid] += 3000
-        await ctx.send(f"{' | '.join(result)}
+await ctx.send(f"{' | '.join(result)}")
 3개 일치! +3000P")
     else:
         await ctx.send(f"{' | '.join(result)}
